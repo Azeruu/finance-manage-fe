@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { API_URL } from '@/lib/api'
+import { API_URL, fetchWithAuth } from '@/lib/api'
 
 type EvaluationData = {
     totalSalary: number
@@ -28,9 +28,9 @@ export function EvaluationTab({ month, year, globalEvaluationData, refreshKey }:
             // Kita fetch data aggregate untuk bulan ini
             // Di backend, kita hitung ini menggunakan rute yang mirip
             const [incomeRes, expenseRes, savingRes] = await Promise.all([
-                fetch(`${API_URL}/api/income?month=${month}&year=${year}`, { credentials: 'include' }),
-                fetch(`${API_URL}/api/expense?month=${month}&year=${year}`, { credentials: 'include' }),
-                fetch(`${API_URL}/api/saving?month=${month}&year=${year}`, { credentials: 'include' })
+                fetchWithAuth(`${API_URL}/api/income?month=${month}&year=${year}`),
+                fetchWithAuth(`${API_URL}/api/expense?month=${month}&year=${year}`),
+                fetchWithAuth(`${API_URL}/api/saving?month=${month}&year=${year}`)
             ])
 
             const [income, expenses, savings] = await Promise.all([

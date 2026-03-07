@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { Button } from '@/components/ui/button'
-import { API_URL } from '@/lib/api'
+import { API_URL, fetchWithAuth } from '@/lib/api'
 
 type ExpenseData = {
     id: string
@@ -30,7 +30,7 @@ export function ExpenseTab({ month, year, onDataUpdate }: ExpenseTabProps) {
     const fetchData = async () => {
         setLoading(true)
         try {
-            const res = await fetch(`${API_URL}/api/expense?month=${month}&year=${year}`, { credentials: 'include' })
+            const res = await fetchWithAuth(`${API_URL}/api/expense?month=${month}&year=${year}`)
             if (res.ok) {
                 const json = await res.json()
                 setExpenses(json)
@@ -48,10 +48,9 @@ export function ExpenseTab({ month, year, onDataUpdate }: ExpenseTabProps) {
         setIsSubmitting(true)
 
         try {
-            const res = await fetch(`${API_URL}/api/expense`, {
+            const res = await fetchWithAuth(`${API_URL}/api/expense`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                credentials: 'include',
                 body: JSON.stringify({
                     month,
                     year,
@@ -74,9 +73,8 @@ export function ExpenseTab({ month, year, onDataUpdate }: ExpenseTabProps) {
 
     const handleDelete = async (id: string) => {
         try {
-            const res = await fetch(`${API_URL}/api/expense/${id}`, {
-                method: 'DELETE',
-                credentials: 'include',
+            const res = await fetchWithAuth(`${API_URL}/api/expense/${id}`, {
+                method: 'DELETE'
             })
             if (res.ok) {
                 fetchData()

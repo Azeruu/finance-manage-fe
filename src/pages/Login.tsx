@@ -1,6 +1,6 @@
 import { useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { API_URL } from '@/lib/api'
+import { API_URL, fetchWithAuth } from '@/lib/api'
 import {
     Dialog,
     DialogContent,
@@ -39,7 +39,7 @@ export default function Login() {
 
     // Cek jika user sudah login, langsung redirect ke dashboard
     useEffect(() => {
-        fetch(`${API_URL}/api/auth/me`, { credentials: 'include' })
+        fetchWithAuth(`${API_URL}/api/auth/me`)
             .then((res) => {
                 if (res.ok) navigate('/dashboard', { replace: true })
             })

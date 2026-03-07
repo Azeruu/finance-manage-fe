@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { Button } from '@/components/ui/button'
-import { API_URL } from '@/lib/api'
+import { API_URL, fetchWithAuth } from '@/lib/api'
 
 type SavingData = {
     id: string
@@ -30,7 +30,7 @@ export function SavingTab({ month, year, onDataUpdate }: SavingTabProps) {
     const fetchData = async () => {
         setLoading(true)
         try {
-            const res = await fetch(`${API_URL}/api/saving?month=${month}&year=${year}`, { credentials: 'include' })
+            const res = await fetchWithAuth(`${API_URL}/api/saving?month=${month}&year=${year}`)
             if (res.ok) {
                 const json = await res.json()
                 setSavings(json)
@@ -48,10 +48,9 @@ export function SavingTab({ month, year, onDataUpdate }: SavingTabProps) {
         setIsSubmitting(true)
 
         try {
-            const res = await fetch(`${API_URL}/api/saving`, {
+            const res = await fetchWithAuth(`${API_URL}/api/saving`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                credentials: 'include',
                 body: JSON.stringify({
                     month,
                     year,
@@ -74,9 +73,8 @@ export function SavingTab({ month, year, onDataUpdate }: SavingTabProps) {
 
     const handleDelete = async (id: string) => {
         try {
-            const res = await fetch(`${API_URL}/api/saving/${id}`, {
-                method: 'DELETE',
-                credentials: 'include',
+            const res = await fetchWithAuth(`${API_URL}/api/saving/${id}`, {
+                method: 'DELETE'
             })
             if (res.ok) {
                 fetchData()

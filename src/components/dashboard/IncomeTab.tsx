@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { Button } from '@/components/ui/button'
-import { API_URL } from '@/lib/api'
+import { API_URL, fetchWithAuth } from '@/lib/api'
 
 type IncomeData = {
     id?: string
@@ -29,7 +29,7 @@ export function IncomeTab({ month, year, onDataUpdate }: IncomeTabProps) {
     const fetchData = async () => {
         setLoading(true)
         try {
-            const res = await fetch(`${API_URL}/api/income?month=${month}&year=${year}`, { credentials: 'include' })
+            const res = await fetchWithAuth(`${API_URL}/api/income?month=${month}&year=${year}`)
             if (res.ok) {
                 const json = await res.json()
                 setData(json)
@@ -47,10 +47,9 @@ export function IncomeTab({ month, year, onDataUpdate }: IncomeTabProps) {
         e.preventDefault()
         setLoading(true)
         try {
-            const res = await fetch(`${API_URL}/api/income`, {
+            const res = await fetchWithAuth(`${API_URL}/api/income`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                credentials: 'include',
                 body: JSON.stringify({
                     month,
                     year,

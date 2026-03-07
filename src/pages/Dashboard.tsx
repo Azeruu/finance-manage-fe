@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Button } from '@/components/ui/button'
-import { API_URL } from '@/lib/api'
+import { API_URL, fetchWithAuth, setToken, removeToken } from '@/lib/api'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 
 import { IncomeTab } from '../components/dashboard/IncomeTab'
@@ -32,7 +32,17 @@ export default function Dashboard() {
     const [globalEvaluationData, setGlobalEvaluationData] = useState<any>(null)
 
     useEffect(() => {
-        fetch(`${API_URL}/api/auth/me`, { credentials: 'include' })
+        // Tangkap token dari URL query param jika baru selesai OAuth redirect
+        const urlParams = new URLSearchParams(window.location.search)
+        const tokenFromUrl = urlParams.get('token')
+
+        if (tokenFromUrl) {
+            setToken(tokenFromUrl)
+            // Bersihkan URL bar secara diam-diam tanpa reload
+            window.history.replaceState({}, document.title, window.location.pathname)
+        }
+
+        fetchWithAuth(`${API_URL}/api/auth/me`)
             .then((res) => {
                 if (!res.ok) throw new Error('Unauthorized')
                 return res.json() as Promise<User>
@@ -53,7 +63,7 @@ export default function Dashboard() {
 
     const fetchGlobalEvaluation = async () => {
         try {
-            const res = await fetch(`${API_URL}/api/evaluation`, { credentials: 'include' })
+            const res = await fetchWithAuth(`${API_URL}/api/evaluation`)
             if (res.ok) {
                 const data = await res.json()
                 setGlobalEvaluationData(data)
@@ -64,10 +74,10 @@ export default function Dashboard() {
     }
 
     const handleLogout = async () => {
-        await fetch(`${API_URL}/api/auth/logout`, {
-            method: 'POST',
-            credentials: 'include',
+        await fetchWithAuth(`${API_URL}/api/auth/logout`, {
+            method: 'POST'
         })
+        removeToken()
         navigate('/', { replace: true })
     }
 
