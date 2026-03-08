@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { Button } from '@/components/ui/button'
 import { API_URL, fetchWithAuth } from '@/lib/api'
+import { formatNumberWithDots, parseFormattedNumber } from '@/lib/utils'
 
 type ExpenseData = {
     id: string
@@ -55,7 +56,7 @@ export function ExpenseTab({ month, year, onDataUpdate }: ExpenseTabProps) {
                     month,
                     year,
                     name,
-                    amount: parseFloat(amount) || 0
+                    amount: parseFloat(parseFormattedNumber(amount)) || 0
                 })
             })
             if (res.ok) {
@@ -116,9 +117,9 @@ export function ExpenseTab({ month, year, onDataUpdate }: ExpenseTabProps) {
                     </div>
                     <div className="w-1/3">
                         <input
-                            type="number"
+                            type="text"
                             value={amount}
-                            onChange={(e) => setAmount(e.target.value)}
+                            onChange={(e) => setAmount(formatNumberWithDots(e.target.value))}
                             placeholder="Nominal"
                             className="w-full bg-slate-900 border border-slate-700 rounded-lg px-4 py-2.5 text-white focus:outline-none focus:ring-2 focus:ring-rose-500"
                             required

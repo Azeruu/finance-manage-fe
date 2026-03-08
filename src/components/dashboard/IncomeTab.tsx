@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { Button } from '@/components/ui/button'
 import { API_URL, fetchWithAuth } from '@/lib/api'
+import { formatNumberWithDots, parseFormattedNumber } from '@/lib/utils'
 
 type IncomeData = {
     id?: string
@@ -33,8 +34,8 @@ export function IncomeTab({ month, year, onDataUpdate }: IncomeTabProps) {
             if (res.ok) {
                 const json = await res.json()
                 setData(json)
-                setSalary(json.salary.toString() || '0')
-                setAtmBalance(json.atmBalance.toString() || '0')
+                setSalary(formatNumberWithDots(json.salary))
+                setAtmBalance(formatNumberWithDots(json.atmBalance))
             }
         } catch (e) {
             console.error(e)
@@ -53,8 +54,8 @@ export function IncomeTab({ month, year, onDataUpdate }: IncomeTabProps) {
                 body: JSON.stringify({
                     month,
                     year,
-                    salary: parseFloat(salary) || 0,
-                    atmBalance: parseFloat(atmBalance) || 0
+                    salary: parseFloat(parseFormattedNumber(salary)) || 0,
+                    atmBalance: parseFloat(parseFormattedNumber(atmBalance)) || 0
                 })
             })
             if (res.ok) {
@@ -88,9 +89,9 @@ export function IncomeTab({ month, year, onDataUpdate }: IncomeTabProps) {
                         <div className="space-y-2">
                             <label className="text-sm font-medium text-slate-300">Gaji Bulanan</label>
                             <input
-                                type="number"
+                                type="text"
                                 value={salary}
-                                onChange={(e) => setSalary(e.target.value)}
+                                onChange={(e) => setSalary(formatNumberWithDots(e.target.value))}
                                 className="w-full bg-slate-900 border border-slate-700 rounded-lg px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
                                 placeholder="0"
                                 required
@@ -99,9 +100,9 @@ export function IncomeTab({ month, year, onDataUpdate }: IncomeTabProps) {
                         <div className="space-y-2">
                             <label className="text-sm font-medium text-slate-300">Sisa Uang di ATM</label>
                             <input
-                                type="number"
+                                type="text"
                                 value={atmBalance}
-                                onChange={(e) => setAtmBalance(e.target.value)}
+                                onChange={(e) => setAtmBalance(formatNumberWithDots(e.target.value))}
                                 className="w-full bg-slate-900 border border-slate-700 rounded-lg px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
                                 placeholder="0"
                                 required

@@ -61,7 +61,7 @@ export function EvaluationTab({ month, year, globalEvaluationData, refreshKey }:
     const monthlyExpense = data?.totalExpense || 0
     const monthlySaving = data?.totalSaving || 0
 
-    const remainingBudget = monthlySalary - monthlyExpense - monthlySaving
+    const remainingBudget = monthlySalary - monthlyExpense
     const expensePercentage = monthlySalary > 0 ? (monthlyExpense / monthlySalary) * 100 : 0
     const savingPercentage = monthlySalary > 0 ? (monthlySaving / monthlySalary) * 100 : 0
 
