@@ -3,6 +3,7 @@ import { API_URL, fetchWithAuth } from '@/lib/api'
 
 type EvaluationData = {
     totalSalary: number
+    totalAtmBalance: number
     totalExpense: number
     totalSaving: number
 }
@@ -44,6 +45,7 @@ export function EvaluationTab({ month, year, globalEvaluationData, refreshKey }:
 
             setData({
                 totalSalary: income?.salary || 0,
+                totalAtmBalance: income?.atmBalance || 0,
                 totalExpense,
                 totalSaving
             })
@@ -57,7 +59,9 @@ export function EvaluationTab({ month, year, globalEvaluationData, refreshKey }:
     if (loading) return <div className="text-slate-400 py-8 text-center animate-pulse">Menghitung data evaluasi...</div>
 
     // Kalkulasi statistik untuk bulan ini
-    const monthlySalary = data?.totalSalary || 0
+    const salary = data?.totalSalary || 0
+    const atmBalance = data?.totalAtmBalance || 0
+    const monthlySalary = salary + atmBalance
     const monthlyExpense = data?.totalExpense || 0
     const monthlySaving = data?.totalSaving || 0
 
@@ -105,7 +109,7 @@ export function EvaluationTab({ month, year, globalEvaluationData, refreshKey }:
                     </div>
 
                     <div className="bg-slate-900/50 rounded-lg p-4 border border-slate-700/50">
-                        <p className="text-xs text-slate-400 mb-1">Pendapatan</p>
+                        <p className="text-xs text-slate-400 mb-1">Pendapatan + Sisa ATM</p>
                         <p className="text-xl font-bold text-blue-400">Rp {monthlySalary.toLocaleString('id-ID')}</p>
                     </div>
 
