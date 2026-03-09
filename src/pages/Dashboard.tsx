@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Button } from '@/components/ui/button'
 import { API_URL, fetchWithAuth, setToken, removeToken } from '@/lib/api'
-import { Menu, X, LayoutDashboard, Banknote, CreditCard, Wallet, CircleDollarSign, LogOut } from 'lucide-react'
+import { Menu, X, LayoutDashboard, Banknote, CreditCard, Wallet, CircleDollarSign, LogOut, FileSpreadsheet } from 'lucide-react'
 
 import { DashboardOverview } from '../components/dashboard/DashboardOverview'
 import { IncomeTab } from '../components/dashboard/IncomeTab'
@@ -10,12 +10,20 @@ import { ExpenseTab } from '../components/dashboard/ExpenseTab'
 import { SavingTab } from '../components/dashboard/SavingTab'
 import { OtherFundTab } from '../components/dashboard/OtherFundTab'
 import { EvaluationTab } from '../components/dashboard/EvaluationTab'
+import { RecentExpenseTab } from '../components/dashboard/RecentExpenseTab'
 
 type User = {
     id: string
     name: string | null
     email: string
     avatar: string | null
+}
+
+type GlobalEvaluationData = {
+    totalSalary: number
+    totalExpense: number
+    totalSaving: number
+    totalOtherFund: number
 }
 
 export default function Dashboard() {
@@ -31,7 +39,7 @@ export default function Dashboard() {
     const [refreshKey, setRefreshKey] = useState(0)
 
     // Tracking overall totals for header cards
-    const [globalEvaluationData, setGlobalEvaluationData] = useState<any>(null)
+    const [globalEvaluationData, setGlobalEvaluationData] = useState<GlobalEvaluationData | null>(null)
 
     // Layout State
     const [activeTab, setActiveTab] = useState('overview')
@@ -62,11 +70,6 @@ export default function Dashboard() {
             })
     }, [navigate])
 
-    useEffect(() => {
-        if (!user) return
-        fetchGlobalEvaluation()
-    }, [user, refreshKey])
-
     const fetchGlobalEvaluation = async () => {
         try {
             const res = await fetchWithAuth(`${API_URL}/api/evaluation`)
@@ -79,6 +82,12 @@ export default function Dashboard() {
         }
     }
 
+    useEffect(() => {
+        if (!user) return
+        // eslint-disable-next-line react-hooks/set-state-in-effect
+        fetchGlobalEvaluation()
+    }, [user, refreshKey])
+
     const handleLogout = async () => {
         await fetchWithAuth(`${API_URL}/api/auth/logout`, {
             method: 'POST'
@@ -89,6 +98,22 @@ export default function Dashboard() {
 
     const triggerUpdate = () => {
         setRefreshKey(prev => prev + 1)
+    }
+
+    const openSpreadsheet = async () => {
+        try {
+            const res = await fetchWithAuth(`${API_URL}/api/auth/google-sheet-url`)
+            const data = await res.json()
+            if (res.ok) {
+                window.open(data.url, '_blank')
+            } else {
+                // Jika gagal karena izin atau token, arahkan untuk login ulang
+                alert(data.error || 'Gagal memuat spreadsheet. Pastikan Anda sudah memberikan izin Google Sheets saat login.')
+            }
+        } catch (e) {
+            console.error(e)
+            alert('Terjadi kesalahan saat menghubungi server.')
+        }
     }
 
     if (loading) {
@@ -109,6 +134,7 @@ export default function Dashboard() {
         { id: 'tabungan', label: 'Tabungan', icon: <Wallet size={20} /> },
         { id: 'dana-lainnya', label: 'Dana Lainnya', icon: <CircleDollarSign size={20} /> },
         { id: 'evaluasi', label: 'Evaluasi Lengkap', icon: <LayoutDashboard size={20} /> }, // Evaluation uses same icon or similar
+        { id: 'pengeluaran-terkini', label: 'Pengeluaran Terkini', icon: <CreditCard size={20} /> },
     ]
 
     return (
@@ -202,8 +228,18 @@ export default function Dashboard() {
                         </h1>
                     </div>
 
-                    {/* Month/Year Selector */}
-                    <div className="flex items-center gap-3 bg-slate-800/60 p-1.5 rounded-lg border border-slate-700">
+                    <div className="flex items-center gap-3">
+                        <Button
+                            onClick={openSpreadsheet}
+                            variant="outline"
+                            className="hidden md:flex items-center gap-2 text-emerald-400 border-emerald-500/30 hover:bg-emerald-500/10 hover:text-emerald-300 py-1.5 h-auto"
+                        >
+                            <FileSpreadsheet size={16} />
+                            Lihat Spreadsheet
+                        </Button>
+
+                        {/* Month/Year Selector */}
+                        <div className="flex items-center gap-3 bg-slate-800/60 p-1.5 rounded-lg border border-slate-700">
                         <select
                             value={selectedMonth}
                             onChange={(e) => setSelectedMonth(Number(e.target.value))}
@@ -226,6 +262,7 @@ export default function Dashboard() {
                             ))}
                         </select>
                     </div>
+                </div>
                 </header>
 
                 {/* Content Scrollable Area */}
@@ -254,6 +291,7 @@ export default function Dashboard() {
                             {activeTab === 'tabungan' && <SavingTab month={selectedMonth} year={selectedYear} onDataUpdate={triggerUpdate} />}
                             {activeTab === 'dana-lainnya' && <OtherFundTab month={selectedMonth} year={selectedYear} onDataUpdate={triggerUpdate} />}
                             {activeTab === 'evaluasi' && <EvaluationTab month={selectedMonth} year={selectedYear} globalEvaluationData={globalEvaluationData} refreshKey={refreshKey} />}
+                            {activeTab === 'pengeluaran-terkini' && <RecentExpenseTab onDataUpdate={triggerUpdate} />}
                         </div>
 
                     </div>
