@@ -13,7 +13,7 @@ export default function Login() {
     }, [isLoaded, isSignedIn, navigate])
 
     return (
-        <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-slate-950 via-slate-900 to-blue-950 px-4">
+        <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-slate-950 via-blue-900 to-blue-950 px-4">
             {/* Background decorative blobs */}
             <div aria-hidden="true" className="absolute inset-0 overflow-hidden pointer-events-none">
                 <div className="absolute -top-40 -right-40 w-96 h-96 bg-blue-600/10 rounded-full blur-3xl" />
@@ -22,29 +22,29 @@ export default function Login() {
 
             {/* Branding Section */}
             <div className="text-center mb-10 z-10 animate-in fade-in slide-in-from-bottom-4 duration-700">
-                <div className="flex justify-center mb-6">
-                        <img src="/logoFinance.png" className='w-100 h-55 -mb-21' alt="Finance Manager Logo" />
-                </div>
-                <h1 className="text-4xl md:text-5xl font-black text-white mb-4 tracking-tight">
-                    Finance Manager
+                {/* <div className="flex justify-center mb-6">
+                    <img src="/myfinance_logo_nobg.png" className='w-100 h-55 -mb-21' alt="Finance Manager Logo" />
+                </div> */}
+                <h1 className="text-4xl md:text-5xl font-black text-sky-400 mb-4 tracking-tight">
+                    My<span className='text-blue-500'>Finance</span>
                 </h1>
-                <p className="text-slate-400 text-lg max-w-md mx-auto leading-relaxed">
+                <p className="text-slate-300/50 text-sm max-w-md mx-auto leading-relaxed">
                     Pantau keuangan Anda dengan sistem pencatatan cerdas dan visualisasi tren yang elegan.
                 </p>
             </div>
 
             {/* Login Selection */}
-            <div className="z-10 w-full max-w-sm">
+            <div className="z-10 w-full max-w-sm flex justify-center items-center">
                 <SignedOut>
                     <SignInButton mode="modal">
                         <Button
-                            className="w-full h-16 bg-white hover:bg-slate-100 text-slate-950 border-none font-black text-xl shadow-2xl rounded-2xl transition-all duration-300 hover:scale-[1.03] active:scale-[0.98]"
+                            className="w-40 h-12 bg-sky-600 hover:bg-sky-400 text-black border-none cursor-pointer text-2xl shadow-2xl rounded-2xl transition-all duration-300 hover:scale-[1.03] active:scale-[0.98]"
                         >
-                            Masuk Ke Dashboard
+                            Login
                         </Button>
                     </SignInButton>
                 </SignedOut>
-                
+
                 {isLoaded && isSignedIn && (
                     <div className="text-center py-4 text-blue-400 font-medium animate-pulse">
                         Menyiapkan dashboard Anda...
@@ -57,10 +57,10 @@ export default function Login() {
                     </div>
                 )}
             </div>
-            
-            <div className="mt-12 z-10 text-center max-w-md text-xs text-slate-500 leading-relaxed bg-slate-900/40 p-5 rounded-2xl border border-slate-800/50 backdrop-blur-sm">
+
+            <div className="mt-30 z-10 text-center max-w-lg text-xs text-slate-500 leading-relaxed bg-slate-900/40 p-5 rounded-2xl border border-slate-800/50 backdrop-blur-sm">
                 <p className="font-bold text-slate-400 mb-2 flex items-center justify-center gap-2">
-                    <span className="w-2 h-2 bg-emerald-500 rounded-full"></span>
+                    <span className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></span>
                     Sistem Keamanan Aktif
                 </p>
                 Aplikasi menggunakan Clerk untuk autentikasi tingkat lanjut. Data Anda tersimpan aman dan hanya dapat diakses oleh Anda melalui enkripsi standar industri.

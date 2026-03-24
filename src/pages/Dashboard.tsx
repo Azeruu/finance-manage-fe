@@ -129,7 +129,7 @@ export default function Dashboard() {
                         <div className="w-8 h-8 rounded-lg bg-blue-500/20 border border-blue-500/30 flex items-center justify-center">
                             <span className="text-xl">💰</span>
                         </div>
-                        <span className="font-bold text-white tracking-wide truncate">FinanceMgr</span>
+                        <span className="font-bold text-sky-400 tracking-wide truncate">My<span className='text-blue-500'>Finance</span></span>
                     </div>
                     <button
                         className="lg:hidden text-slate-400 hover:text-white"
@@ -149,8 +149,8 @@ export default function Dashboard() {
                                 setIsSidebarOpen(false); // Close on mobile after click
                             }}
                             className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 text-sm font-medium ${activeTab === item.id
-                                    ? 'bg-blue-600/10 text-blue-400 border border-blue-500/20 shadow-sm'
-                                    : 'text-slate-400 hover:bg-slate-800/50 hover:text-white border border-transparent'
+                                ? 'bg-blue-600/10 text-blue-400 border border-blue-500/20 shadow-sm'
+                                : 'text-slate-400 hover:bg-slate-800/50 hover:text-white border border-transparent'
                                 }`}
                         >
                             {item.icon}
@@ -201,29 +201,29 @@ export default function Dashboard() {
                         </h1>
                     </div>
 
-                        <div className="flex items-center gap-3 bg-slate-800/60 p-1.5 rounded-lg border border-slate-700">
-                            <select
-                                value={selectedMonth}
-                                onChange={(e) => setSelectedMonth(Number(e.target.value))}
-                                className="bg-transparent text-sm text-white border-0 px-2 py-1 focus:ring-0 outline-none cursor-pointer"
-                            >
-                                {Array.from({ length: 12 }, (_, i) => i + 1).map(m => (
-                                    <option key={m} value={m} className="bg-slate-800 text-white">
-                                        {new Date(0, m - 1).toLocaleString('id-ID', { month: 'short' })}
-                                    </option>
-                                ))}
-                            </select>
-                            <div className="w-px h-4 bg-slate-600"></div>
-                            <select
-                                value={selectedYear}
-                                onChange={(e) => setSelectedYear(Number(e.target.value))}
-                                className="bg-transparent text-sm text-white border-0 px-2 py-1 focus:ring-0 outline-none cursor-pointer"
-                            >
-                                {Array.from({ length: 5 }, (_, i) => new Date().getFullYear() - 2 + i).map(y => (
-                                    <option key={y} value={y} className="bg-slate-800 text-white">{y}</option>
-                                ))}
-                            </select>
-                        </div>
+                    <div className="flex items-center gap-3 bg-slate-800/60 p-1.5 rounded-lg border border-slate-700">
+                        <select
+                            value={selectedMonth}
+                            onChange={(e) => setSelectedMonth(Number(e.target.value))}
+                            className="bg-transparent text-sm text-white border-0 px-2 py-1 focus:ring-0 outline-none cursor-pointer"
+                        >
+                            {Array.from({ length: 12 }, (_, i) => i + 1).map(m => (
+                                <option key={m} value={m} className="bg-slate-800 text-white">
+                                    {new Date(0, m - 1).toLocaleString('id-ID', { month: 'short' })}
+                                </option>
+                            ))}
+                        </select>
+                        <div className="w-px h-4 bg-slate-600"></div>
+                        <select
+                            value={selectedYear}
+                            onChange={(e) => setSelectedYear(Number(e.target.value))}
+                            className="bg-transparent text-sm text-white border-0 px-2 py-1 focus:ring-0 outline-none cursor-pointer"
+                        >
+                            {Array.from({ length: 5 }, (_, i) => new Date().getFullYear() - 2 + i).map(y => (
+                                <option key={y} value={y} className="bg-slate-800 text-white">{y}</option>
+                            ))}
+                        </select>
+                    </div>
                 </header>
 
                 {/* Content Scrollable Area */}
