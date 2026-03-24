@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Button } from '@/components/ui/button'
-import { API_URL, fetchWithAuth, setToken, removeToken } from '@/lib/api'
+import { API_URL, fetchWithAuth, setClerkGetToken } from '@/lib/api'
+import { useAuth, useUser } from '@clerk/clerk-react'
 import { Menu, X, LayoutDashboard, Banknote, CreditCard, Wallet, CircleDollarSign, LogOut, FileSpreadsheet } from 'lucide-react'
-
 import { DashboardOverview } from '../components/dashboard/DashboardOverview'
 import { IncomeTab } from '../components/dashboard/IncomeTab'
 import { ExpenseTab } from '../components/dashboard/ExpenseTab'
@@ -28,8 +28,8 @@ type GlobalEvaluationData = {
 
 export default function Dashboard() {
     const navigate = useNavigate()
-    const [user, setUser] = useState<User | null>(null)
-    const [loading, setLoading] = useState(true)
+    const { isLoaded, isSignedIn, user: clerkUser } = useUser()
+    const { getToken, signOut } = useAuth()
 
     // Global Date Selection
     const [selectedMonth, setSelectedMonth] = useState(new Date().getMonth() + 1)
@@ -46,29 +46,21 @@ export default function Dashboard() {
     const [isSidebarOpen, setIsSidebarOpen] = useState(false)
 
     useEffect(() => {
-        // Tangkap token dari URL query param jika baru selesai OAuth redirect
-        const urlParams = new URLSearchParams(window.location.search)
-        const tokenFromUrl = urlParams.get('token')
+        setClerkGetToken(getToken)
+    }, [getToken])
 
-        if (tokenFromUrl) {
-            setToken(tokenFromUrl)
-            // Bersihkan URL bar secara diam-diam tanpa reload
-            window.history.replaceState({}, document.title, window.location.pathname)
+    useEffect(() => {
+        if (isLoaded && !isSignedIn) {
+            navigate('/', { replace: true })
         }
+    }, [isLoaded, isSignedIn, navigate])
 
-        fetchWithAuth(`${API_URL}/api/auth/me`)
-            .then((res) => {
-                if (!res.ok) throw new Error('Unauthorized')
-                return res.json() as Promise<User>
-            })
-            .then((data) => {
-                setUser(data)
-                setLoading(false)
-            })
-            .catch(() => {
-                navigate('/', { replace: true })
-            })
-    }, [navigate])
+    const user: User | null = clerkUser ? {
+        id: clerkUser.id,
+        name: clerkUser.fullName,
+        email: clerkUser.primaryEmailAddress?.emailAddress || '',
+        avatar: clerkUser.imageUrl
+    } : null;
 
     const fetchGlobalEvaluation = async () => {
         try {
@@ -89,10 +81,7 @@ export default function Dashboard() {
     }, [user, refreshKey])
 
     const handleLogout = async () => {
-        await fetchWithAuth(`${API_URL}/api/auth/logout`, {
-            method: 'POST'
-        })
-        removeToken()
+        await signOut()
         navigate('/', { replace: true })
     }
 
@@ -116,7 +105,7 @@ export default function Dashboard() {
         }
     }
 
-    if (loading) {
+    if (!isLoaded) {
         return (
             <div className="min-h-screen flex items-center justify-center bg-slate-900">
                 <div className="flex flex-col items-center gap-4">
