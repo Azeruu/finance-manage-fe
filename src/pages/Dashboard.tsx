@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { Button } from '@/components/ui/button'
 import { API_URL, fetchWithAuth, setClerkGetToken } from '@/lib/api'
 import { useAuth, useUser } from '@clerk/clerk-react'
-import { Menu, X, LayoutDashboard, Banknote, CreditCard, Wallet, CircleDollarSign, LogOut, FileSpreadsheet } from 'lucide-react'
+import { Menu, X, LayoutDashboard, Banknote, CreditCard, Wallet, CircleDollarSign, LogOut } from 'lucide-react'
 import { DashboardOverview } from '../components/dashboard/DashboardOverview'
 import { IncomeTab } from '../components/dashboard/IncomeTab'
 import { ExpenseTab } from '../components/dashboard/ExpenseTab'
@@ -87,22 +87,6 @@ export default function Dashboard() {
 
     const triggerUpdate = () => {
         setRefreshKey(prev => prev + 1)
-    }
-
-    const openSpreadsheet = async () => {
-        try {
-            const res = await fetchWithAuth(`${API_URL}/api/auth/google-sheet-url`)
-            const data = await res.json()
-            if (res.ok) {
-                window.open(data.url, '_blank')
-            } else {
-                // Jika gagal karena izin atau token, arahkan untuk login ulang
-                alert(data.error || 'Gagal memuat spreadsheet. Pastikan Anda sudah memberikan izin Google Sheets saat login.')
-            }
-        } catch (e) {
-            console.error(e)
-            alert('Terjadi kesalahan saat menghubungi server.')
-        }
     }
 
     if (!isLoaded) {
@@ -217,41 +201,29 @@ export default function Dashboard() {
                         </h1>
                     </div>
 
-                    <div className="flex items-center gap-3">
-                        <Button
-                            onClick={openSpreadsheet}
-                            variant="outline"
-                            className="hidden md:flex items-center gap-2 text-emerald-400 border-emerald-500/30 hover:bg-emerald-500/10 hover:text-emerald-300 py-1.5 h-auto"
-                        >
-                            <FileSpreadsheet size={16} />
-                            Lihat Spreadsheet
-                        </Button>
-
-                        {/* Month/Year Selector */}
                         <div className="flex items-center gap-3 bg-slate-800/60 p-1.5 rounded-lg border border-slate-700">
-                        <select
-                            value={selectedMonth}
-                            onChange={(e) => setSelectedMonth(Number(e.target.value))}
-                            className="bg-transparent text-sm text-white border-0 px-2 py-1 focus:ring-0 outline-none cursor-pointer"
-                        >
-                            {Array.from({ length: 12 }, (_, i) => i + 1).map(m => (
-                                <option key={m} value={m} className="bg-slate-800 text-white">
-                                    {new Date(0, m - 1).toLocaleString('id-ID', { month: 'short' })}
-                                </option>
-                            ))}
-                        </select>
-                        <div className="w-px h-4 bg-slate-600"></div>
-                        <select
-                            value={selectedYear}
-                            onChange={(e) => setSelectedYear(Number(e.target.value))}
-                            className="bg-transparent text-sm text-white border-0 px-2 py-1 focus:ring-0 outline-none cursor-pointer"
-                        >
-                            {Array.from({ length: 5 }, (_, i) => new Date().getFullYear() - 2 + i).map(y => (
-                                <option key={y} value={y} className="bg-slate-800 text-white">{y}</option>
-                            ))}
-                        </select>
-                    </div>
-                </div>
+                            <select
+                                value={selectedMonth}
+                                onChange={(e) => setSelectedMonth(Number(e.target.value))}
+                                className="bg-transparent text-sm text-white border-0 px-2 py-1 focus:ring-0 outline-none cursor-pointer"
+                            >
+                                {Array.from({ length: 12 }, (_, i) => i + 1).map(m => (
+                                    <option key={m} value={m} className="bg-slate-800 text-white">
+                                        {new Date(0, m - 1).toLocaleString('id-ID', { month: 'short' })}
+                                    </option>
+                                ))}
+                            </select>
+                            <div className="w-px h-4 bg-slate-600"></div>
+                            <select
+                                value={selectedYear}
+                                onChange={(e) => setSelectedYear(Number(e.target.value))}
+                                className="bg-transparent text-sm text-white border-0 px-2 py-1 focus:ring-0 outline-none cursor-pointer"
+                            >
+                                {Array.from({ length: 5 }, (_, i) => new Date().getFullYear() - 2 + i).map(y => (
+                                    <option key={y} value={y} className="bg-slate-800 text-white">{y}</option>
+                                ))}
+                            </select>
+                        </div>
                 </header>
 
                 {/* Content Scrollable Area */}

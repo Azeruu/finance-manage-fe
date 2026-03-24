@@ -121,8 +121,21 @@ export function DashboardOverview({ globalEvaluationData, year, refreshKey }: Da
                     <h3 className="text-lg font-semibold text-white mb-6">Tren Keuangan {year}</h3>
 
                     {loading ? (
-                        <div className="h-72 flex items-center justify-center">
-                            <div className="animate-pulse text-slate-400">Loading chart...</div>
+                        <div className="h-80 w-full flex flex-col justify-between pt-2 pb-8 px-4">
+                            <div className="flex-1 flex items-end gap-3">
+                                {[...Array(12)].map((_, i) => (
+                                    <div 
+                                        key={i} 
+                                        className="flex-1 bg-slate-700/30 rounded-t-sm animate-pulse" 
+                                        style={{ height: `${20 + Math.random() * 60}%`, animationDelay: `${i * 0.05}s` }}
+                                    />
+                                ))}
+                            </div>
+                            <div className="flex justify-between mt-4">
+                                {[...Array(6)].map((_, i) => (
+                                    <div key={i} className="h-2 w-8 bg-slate-700/30 rounded animate-pulse" />
+                                ))}
+                            </div>
                         </div>
                     ) : (
                         <div className="w-full h-80 max-w-full overflow-hidden">

@@ -29,7 +29,7 @@ export default function Login() {
                     Finance Manager
                 </h1>
                 <p className="text-slate-400 text-lg max-w-md mx-auto leading-relaxed">
-                    Kelola aliran kas Anda secara cerdas dengan sinkronisasi Google Sheets otomatis.
+                    Pantau keuangan Anda dengan sistem pencatatan cerdas dan visualisasi tren yang elegan.
                 </p>
             </div>
 
@@ -40,7 +40,7 @@ export default function Login() {
                         <Button
                             className="w-full h-16 bg-white hover:bg-slate-100 text-slate-950 border-none font-black text-xl shadow-2xl rounded-2xl transition-all duration-300 hover:scale-[1.03] active:scale-[0.98]"
                         >
-                            Masuk / Mulai Sekarang
+                            Masuk Ke Dashboard
                         </Button>
                     </SignInButton>
                 </SignedOut>
@@ -61,9 +61,9 @@ export default function Login() {
             <div className="mt-12 z-10 text-center max-w-md text-xs text-slate-500 leading-relaxed bg-slate-900/40 p-5 rounded-2xl border border-slate-800/50 backdrop-blur-sm">
                 <p className="font-bold text-slate-400 mb-2 flex items-center justify-center gap-2">
                     <span className="w-2 h-2 bg-emerald-500 rounded-full"></span>
-                    Sistem Keamanan Baru Aktif
+                    Sistem Keamanan Aktif
                 </p>
-                Aplikasi sekarang menggunakan integrasi Clerk & Google Service Account. Data Anda aman dan otomatis tersinkronisasi ke Google Sheets tanpa resiko keamanan tambahan.
+                Aplikasi menggunakan Clerk untuk autentikasi tingkat lanjut. Data Anda tersimpan aman dan hanya dapat diakses oleh Anda melalui enkripsi standar industri.
             </div>
         </div>
     )
